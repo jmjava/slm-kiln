@@ -1,0 +1,20 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+
+rootProject.name = 'slm-kiln'
+
+// Composite-build liberation-data/kiln so we call LlamaModel for real.
+// Default: vendor/kiln (scripts/fetch-kiln.sh). Override: -Pkiln.home=/path/to/kiln
+def kilnHome = settings.hasProperty('kiln.home') ? settings['kiln.home'] : 'vendor/kiln'
+def kilnDir = file(kilnHome)
+if (!kilnDir.directory) {
+    throw new GradleException(
+        "Kiln not found at ${kilnDir.absolutePath}. Run scripts/fetch-kiln.sh " +
+        "or pass -Pkiln.home=/path/to/liberation-data/kiln"
+    )
+}
+includeBuild(kilnDir)

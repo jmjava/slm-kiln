@@ -1,0 +1,30 @@
+{
+  "host_class": "halo-395",
+  "backend": "vulkan",
+  "models": [
+    {
+      "id": "embabel-base",
+      "source_repo": "jmjava/embabel-slm",
+      "note": "Official coding GGUF used as Embabel M1 baseline before any adapter. Replace path after export.",
+      "gguf": "models/embabel-base.gguf",
+      "context": 8192,
+      "gpu_layers": -1
+    },
+    {
+      "id": "embabel-lora-merged",
+      "source_repo": "jmjava/embabel-slm",
+      "note": "Merged LoRA→GGUF after M5 when retrieval did not close the gap. Train elsewhere; run here.",
+      "gguf": "models/embabel-lora-merged.gguf",
+      "context": 8192,
+      "gpu_layers": -1
+    },
+    {
+      "id": "drivine-lora-merged",
+      "source_repo": "jmjava/drivine-slm",
+      "note": "Merged Drivine-domain adapter exported to GGUF for Kiln on Halo.",
+      "gguf": "models/drivine-lora-merged.gguf",
+      "context": 8192,
+      "gpu_layers": -1
+    }
+  ]
+}

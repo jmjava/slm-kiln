@@ -1,0 +1,14 @@
+.gradle/
+build/
+out/
+.idea/
+*.iml
+.env
+vendor/
+models/*.gguf
+models/**/*.gguf
+models/**/*.safetensors
+models/**/adapter_model*
+outputs/
+eval-runs/
+.DS_Store

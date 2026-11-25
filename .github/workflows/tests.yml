@@ -1,0 +1,20 @@
+name: tests
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - name: Fetch Kiln (compile dependency)
+        run: ./scripts/fetch-kiln.sh
+      - name: Catalog unit tests
+        run: ./gradlew test --no-daemon
+      # Native Vulkan + GGUF smoke stays on Halo; not in CI.

@@ -1,0 +1,58 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'com.jmjava.slm'
+version = '0.1.0-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+def kilnBackend = findProperty('kiln.backend') ?: 'vulkan'
+def kilnHome = file(findProperty('kiln.home') ?: 'vendor/kiln')
+def osName = System.getProperty('os.name').toLowerCase().contains('mac') ? 'macos' : 'linux'
+def arch = System.getProperty('os.arch').replace('amd64', 'x86_64').replace('aarch64', 'arm64')
+def nativeDir = new File(kilnHome, "build/native/${osName}-${arch}-${kilnBackend}")
+
+dependencies {
+    implementation 'org.liberationdata.kiln:kiln-llama:0.1.0-SNAPSHOT'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.19.2'
+
+    testImplementation platform('org.junit:junit-bom:5.13.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+application {
+    mainClass = 'com.jmjava.slm.kiln.SmokeMain'
+    applicationDefaultJvmArgs = [
+        '--enable-native-access=ALL-UNNAMED',
+        "-Dkiln.library.path=${nativeDir.absolutePath}",
+    ]
+}
+
+tasks.named('run', JavaExec).configure {
+    jvmArgs '--enable-native-access=ALL-UNNAMED'
+    systemProperty 'kiln.library.path', nativeDir.absolutePath
+    // Example: ./gradlew run --args='embabel-base "Write a Kotlin @Action stub"'
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
+
+tasks.register('printKilnPath') {
+    doLast {
+        println "kiln.home=${kilnHome.absolutePath}"
+        println "kiln.backend=${kilnBackend}"
+        println "nativeDir=${nativeDir.absolutePath} exists=${nativeDir.directory}"
+    }
+}
