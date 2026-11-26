@@ -36,11 +36,14 @@ public final class SmokeMain {
         System.out.println("---");
 
         try (KilnModelRunner runner = new KilnModelRunner(spec)) {
+            long t0 = System.nanoTime();
             var result = runner.chat(prompt, System.out::print);
+            double seconds = (System.nanoTime() - t0) / 1e9;
             System.out.println();
             System.out.println("---");
-            System.out.println("prompt_tokens=" + result.promptTokens()
-                    + " generated_tokens=" + result.generatedTokens());
+            System.out.printf("prompt_tokens=%d generated_tokens=%d seconds=%.3f tok_per_s=%.2f%n",
+                    result.promptTokens(), result.generatedTokens(), seconds,
+                    result.generatedTokens() / seconds);
         }
     }
 }
